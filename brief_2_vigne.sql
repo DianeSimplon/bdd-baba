@@ -68,3 +68,124 @@ CREATE TABLE Recolte
  (9,9,25),
  (10,10,100),
  (11,20,70);
+ 
+ 
+--facile
+
+--1
+SELECT appellation FROM Vin WHERE annee LIKE '1995%';
+
+--2
+SELECT appellation, couleur, annee,degre FROM Vin 
+WHERE annee > 2000;
+
+--3
+SELECT appellation FROM Vin WHERE annee BETWEEN 2000 AND 2009;
+
+--4
+SELECT appellation FROM Vin WHERE couleur = 'Blanc' AND degre > 14;
+
+--5
+SELECT appellation FROM Vin WHERE appellation LIKE '%AOC%';
+
+--6
+SELECT domaine FROM Producteur WHERE region ='Bordeaux';
+
+--7
+SELECT nom, region FROM producteur WHERE numProd=5;
+
+--8
+SELECT nom FROM Producteur WHERE region = 'Beaujolais';
+
+--9
+SELECT * FROM Producteur WHERE nom LIKE 'Dupon%'; 
+
+--10
+SELECT nom FROM Producteur ORDER BY nom;
+
+--NIVEAU Moyen
+
+--1
+SELECT annee FROM Vin WHERE degre >13 GROUP BY couleur ORDER BY annee DESC;
+
+--2
+SELECT * FROM Vin WHERE prix ORDER BY(couleur, degre) AND degre > AVG(degre);
+
+--3
+SELECT min(degre), MAX(degre) FROM Vin WHERE appellation AND couleur;
+
+--vrai reponse
+SELECT min(degre), MAX(degre),appellation,couleur FROM Vin ;
+
+--MULTI-TABLES
+
+--1
+SELECT nom FROM Producteur 
+JOIN Recolte ON Producteur.numProd = Recolte.nProd
+WHERE nVin =20 AND quantite>50;
+
+--2
+SELECT COUNT(nVin) FROM recolte
+JOIN vin ON recolte.nVin = vin.numVin
+WHERE Couleur ='rouge' AND annee = 2004;
+
+--3
+SELECT sum(quantite),annee FROM Recolte
+JOIN vin ON Recolte.nVin=vin.numVin
+WHERE couleur ='blanc';
+
+--4
+SELECT annee, AVG(degre) FROM Vin WHERE couleur ='blanc';
+
+--5
+SELECT nom, domaine FROM Producteur
+JOIN recolte ON Producteur.numProd= recolte.nProd
+JOIN vin ON recolte.nVin= vin.numVin
+WHERE couleur = 'rouge';
+
+--6
+SELECT appellation, nProd, quantite FROM Vin 
+JOIN recolte ON Vin.numVin = recolte.nVin
+WHERE annee = 1999 AND quantite = 200;
+
+--MULTI-TABLES AVEC REQUETE IMBRIQUE
+
+--vmts01
+SELECT nom FROM Producteur WHERE nVin = 20 
+AND vin.numVin=Recolte.nVin
+(
+	SELECT * FROM recolte 
+    WHERE quantite > 50
+);
+
+SELECT nom FROM producteur 
+INNER JOIN récolte 
+ON nProd=numProd 
+AND quantite > 50 
+INNER JOIN vin 
+ON numVin=20; 
+
+vmts02
+SELECT count(nProd) FROM récolte 
+WHERE nVin IN
+(
+	SELECT numVIn FROM vin 
+	WHERE couleur = 'Rouge' 
+	AND annee=2014
+); 
+vmts03
+SELECT AVG(degre),annee 
+FROM vin WHERE couleur='blanc' 
+GROUP BY annee
+
+vmts04
+SELECT nom,domaine FROM producteur 
+WHERE numProd IN 
+(
+	SELECT nProd FROM récolte 
+	WHERE nVin IN 
+	(
+		SELECT numVin FROM vin 
+		WHERE couleur='rouge'
+	)
+); 

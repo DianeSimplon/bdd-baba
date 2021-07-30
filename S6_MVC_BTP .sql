@@ -9,7 +9,7 @@ CREATE TABLE Client
   anneeNaiss int(11),  
   ville varchar(64),  
   PRIMARY KEY (id)
-); 
+);  
 
 CREATE TABLE Fournisseur
 (
